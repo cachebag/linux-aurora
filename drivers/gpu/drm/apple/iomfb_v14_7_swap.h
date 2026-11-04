@@ -11,6 +11,9 @@
 #define DCP_V14_SURFACE_SIZE		0x22c
 
 /* Offsets in the swap record. Rectangles are x, y, w, h (u32 each). */
+#define DCP_V14_SWAP_TS1		0x00	/* u64 presentation timing */
+#define DCP_V14_SWAP_TS2		0x08
+#define DCP_V14_SWAP_TS3		0x30
 #define DCP_V14_SWAP_ID			0x98
 #define DCP_V14_SWAP_SURF_ID(p)		(0x9c + (p) * 4)
 #define DCP_V14_SWAP_SRC(p)		(0xac + (p) * 16)	/* in the surface */
@@ -113,6 +116,20 @@ static inline void dcp_v14_encode_swap(u8 *swap, u32 id, u32 background, const u
 		dcp_v14_put_rect(swap + DCP_V14_SWAP_DST(layer), 0, dst_y, width, height);
 		swap[DCP_V14_SWAP_SURF_NULL(layer)] = 0;
 	}
+}
+
+/*
+ * The presentation timing words open the swap record as on 12.x/13.x and
+ * 26.6 (see dcp_v26_swap_set_timing()); the 14.7 header matches the 26.6
+ * one up to the background word. With them zero, the 120 Hz ProMotion
+ * panel completes back-to-back swaps at 60 Hz. A non-zero target long
+ * past, as the M1/M2 hosts send, asks for the next refresh instead.
+ */
+static inline void dcp_v14_swap_set_timing(u8 *swap, u64 value)
+{
+	put_unaligned_le64(value, swap + DCP_V14_SWAP_TS1);
+	put_unaligned_le64(value, swap + DCP_V14_SWAP_TS2);
+	put_unaligned_le64(value, swap + DCP_V14_SWAP_TS3);
 }
 
 #endif /* __APPLE_IOMFB_V14_7_SWAP_H__ */

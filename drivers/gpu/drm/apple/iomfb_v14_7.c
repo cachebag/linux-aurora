@@ -66,6 +66,11 @@
 #define DCP_V14_LAYER		0
 #define DCP_V14_BLACK		0xff000000
 
+static bool t6030_swap_timestamps = true;
+module_param(t6030_swap_timestamps, bool, 0644);
+MODULE_PARM_DESC(t6030_swap_timestamps,
+		 "14.7 ProMotion panels: time-stamp swaps so the 120 Hz timing is shown at 120 Hz, not 60 Hz (default: on)");
+
 static const struct dcp_v14_board dcp_v14_board_t6030 = {
 	.name = "T6030",
 	.debugfs = "dcp-t6030",
@@ -187,6 +192,8 @@ struct apple_dcp_v14 {
 	struct work_struct stopped_work;
 	bool failed;
 	bool started;
+	/* The internal panel runs its 120 Hz ProMotion timing: time its swaps. */
+	bool timed;
 
 	/*
 	 * An external processor: no panel. Its modes come from the
@@ -2336,6 +2343,7 @@ static int dcp_v14_mode(struct apple_dcp *dcp, struct apple_dcp_v14 *v14)
 		return -EINVAL;
 	}
 	best->mode.type |= DRM_MODE_TYPE_PREFERRED;
+	v14->timed = v14->board->promotion && drm_mode_vrefresh(&best->mode) == 120;
 	selected = kmemdup(best, sizeof(*best), GFP_KERNEL);
 	kfree(modes);
 	if (!selected)
@@ -2535,6 +2543,9 @@ static int dcp_v14_swap(struct apple_dcp_v14 *v14, const u8 *surface, u64 iova,
 	if (!ret) {
 		dcp_v14_encode_swap(swap, id, DCP_V14_BLACK, surface, iova, width, height,
 				    dst_y, DCP_V14_LAYER);
+		if (surface && !v14->external && v14->timed &&
+		    READ_ONCE(t6030_swap_timestamps))
+			dcp_v14_swap_set_timing(swap, 120);
 		ret = dcp_v14_call_guarded(v14, A(407), swap, DCP_V14_SWAP_SIZE, result, sizeof(result),
 				   id, dcp_v14_swap_admit, &admission);
 		/* The swap status sits at byte 5 of the reply. */
