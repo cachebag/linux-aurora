@@ -255,8 +255,8 @@ RUN_ID=$(cat /proc/sys/kernel/random/uuid 2>/dev/null) || RUN_ID=""
 
 # The kernel package version and the release tag move independently: a release
 # that only changes m1n1 reuses the previous kernel packages unchanged.
-VERSION=7.1.12.aurora2-12.4
-TAG=sep-7.1.12.aurora2-12.4
+VERSION=7.1.12.aurora2-20261017.20
+TAG=aurora-2026.10.17.20
 # Packages are fetched from this script's own tag, never from "latest": the
 # checksums below belong to this release and nothing else.
 PUBLIC_RELEASE_URL=https://github.com/omacom/linux-aurora/releases/download/$TAG
@@ -272,20 +272,20 @@ RELEASES_API=${AURORA_RELEASES_API:-$PUBLIC_RELEASES_API}
 # Where to always get the current script, whatever this copy turns out to be.
 LATEST_URL=https://github.com/omacom/linux-aurora/releases/latest/download/install-aurora-sep.sh
 PACKAGES=(
-  "linux-aurora-$VERSION-aarch64.pkg.tar.zst fded7d73e13dbe7f82722b925a257835761584203c5189337a251abab298bbde"
-  "linux-aurora-headers-$VERSION-aarch64.pkg.tar.zst a8da8cd00a40010ebe6096ae50c53b1ae461ae6570aa437f5b79a02f10b80cca"
+  "linux-aurora-7.1.12.aurora2-20261017.20-aarch64.pkg.tar.zst 49efa0ec088059aaae6c1fc7fef49521171abbab2c21a3d62bf670148dc0c7d8"
+  "linux-aurora-headers-7.1.12.aurora2-20261017.20-aarch64.pkg.tar.zst 7d8e7370fbc777e8694f29b66e20bf60eb826432234824833ac28ebdf4bee5f8"
   "libfprint-1.94.100-1.1-aarch64.pkg.tar.zst bc7d9762db6644f2cfb58ddb209602c1d513845eb1498c098e01f12600fcbdf9"
-  "aurora-touchid-20261003-1-any.pkg.tar.zst 29b0360fac8c257d754e64bd1b9c33c487eb2595dd3c31e9138d7a476afa3d64"
+  "aurora-touchid-20261003-2-any.pkg.tar.zst 84243a96fcabed344460c1dc67309730f03de34b9f1955faccbedc10c619c7c4"
 )
 # The one m1n1 for every Mac, as "file sha256": M1 and M2, an M3 on the handoff
 # path (see m3_plan), and the MacBook Neo once NEO_AURORA_M1N1 is 1. Macs differ
 # only in the switches /etc/m1n1.conf arms (m3_switches), never in the binary.
-M1N1_PACKAGE="m1n1-aurora-1.6.1.aurora13-1-aarch64.pkg.tar.zst 23c7aff0f7b2da5ce272bce0eab7893e01091ce4d9350e4e650af1e9195208fa"
+M1N1_PACKAGE="m1n1-aurora-1.6.1.aurora17-5-aarch64.pkg.tar.zst fd72ec6c7ff514a2fb17141ccd8ff94268e4412fc5660fb0db62564a036e30ca"
 # The sha256 of the m1n1.bin in M1N1_PACKAGE: the bytes update-m1n1 puts at
 # the start of boot.bin. The script tells m1n1 builds apart by these bytes,
 # never by the version string they report: aurora8.5-1 and 8.5-2 both reported
 # v1.6.1-omarchy.aurora8.5.
-M1N1_BIN_SHA=bf7b74a4648216432ac36171d896b11fa0584da19b242b16a11aa055963091de
+M1N1_BIN_SHA=396cf3ec1774ca9d15ca1b6f71b5e8a3639b27f80b95d530722b35a5ea35141d
 # 0: a MacBook Neo keeps its own m1n1 (its M1N1= and U_BOOT= in
 # /etc/default/update-m1n1), as before 12.0. 1: it gets M1N1_PACKAGE like every
 # other Mac, and update-m1n1 builds its boot.bin from that m1n1 and the Neo's
@@ -653,14 +653,14 @@ M3_GPU_AUTO=0
 M3_GPU_EXPLICIT_PROFILE=0
 ESP_ARCHIVE_HISTORY=0
 M3_GPU_PROFILE=legacy
-M3_STACK_ID=""
-M3_PERSISTENT_BOARDS="j613"
+M3_STACK_ID="86d69b0dbb5a901bba1e4fc646c20412401da6613566717d207e6859c1f1fb4b"
+M3_PERSISTENT_BOARDS="j613 j615"
 # J615 uses the shared 25G83 ABI with its own board identity and stage1 list.
 # Release capability and explicit owner intent are both required for activation.
-M3_NATIVE25_BOARDS="j613"
+M3_NATIVE25_BOARDS="j613 j615"
 M3_25_J615=0
-M3_STAGE1_25_VERSIONS=""
-M3_STAGE1_25_J615_VERSIONS=""
+M3_STAGE1_25_VERSIONS="v1.6.1-m3next.stage1"
+M3_STAGE1_25_J615_VERSIONS="v1.6.1-m3air25.stage1"
 M3_MESA_NATIVE_MARKER=/opt/mesa-m3/25g83/share/mesa-m3/profile
 # The boards whose 25G83 sessions the installed Mesa's hook admits (mesa-m3 26.1.4.m3.2-4 on);
 # a J615 needs j615-experimental there, or its sessions stop at profile-mismatch.
@@ -700,7 +700,7 @@ M3_GPU_OPTIN=/etc/mesa-m3/t8122-gpu-experiment
 # gets, and is installed in its own pacman transaction once the kernel install is done
 # (m3_pro_mesa_install). The names keep "M3_PRO_MESA" and "m3_pro_mesa" from 12.3, when only
 # the M3 Pro had it: the record, $STATE/m3-pro-mesa, keeps its name and schema on both.
-M3_PRO_MESA_PACKAGE="mesa-m3-26.1.4.m3.1-6-aarch64.pkg.tar.zst 2ad015a06c9cdbee670be5e8af485893f0a6c673e887e152d62f1690cdeb33dd"
+M3_PRO_MESA_PACKAGE="mesa-m3-26.1.4.m3.2-5-aarch64.pkg.tar.zst 7ccf9ca712e1501a7e2ee3bcea14d216f27ceab3b52530947a3bc3fcdc62e175"
 M3_PRO_MESA_PREFIX="/opt/mesa-m3"
 # The package's name, as its .PKGINFO gives it; --uninstall removes it by this exact name.
 M3_PRO_MESA_NAME="mesa-m3"
@@ -712,9 +712,9 @@ M3_PRO_MESA_NEEDS="expat glibc>=2.43 libdisplay-info libdrm libgcc>=3.0 libglvnd
 # The package's own switch-offs, read only to say so in the summary: this file, the user's
 # ~/.config/mesa-m3/disable, or mesa_m3=off on the kernel command line.
 M3_PRO_MESA_DISABLE=/etc/mesa-m3/disable
-M3_PRO_NATIVE_PACKAGE=""
-M3_PRO_VULKAN_PACKAGE=""
-M3_PRO_PERF_MIGRATOR=""
+M3_PRO_NATIVE_PACKAGE="mesa-m3-native-pro-26.1.4.nativepro.20261013-10-aarch64.pkg.tar.zst d1b538aee5a320b02918180068be51329360b6ba46d1995e1e78d2b6a87fbca9"
+M3_PRO_VULKAN_PACKAGE="mesa-m3-pro-vulkan-26.1.4.pro.20261012-1-aarch64.pkg.tar.zst 7cdccaa3b0f88c6b9eb12aedac3a022b63ffd6edee5161d30df1d4e71e89b0d2"
+M3_PRO_PERF_MIGRATOR="IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJFeHRlbmQgdGhlIG1hbmFnZWQgbmF0aXZlIFBybyBzZXNzaW9uIHRvIHRoZSBwYWlyZWQgcmVsZWFzZSBwcm9maWxlLiIiIgppbXBvcnQgaGFzaGxpYgppbXBvcnQgb3MKZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBwd2QKaW1wb3J0IHN0YXQKaW1wb3J0IHN5cwppbXBvcnQgdGVtcGZpbGUKCmhvbWUgPSBQYXRoKHB3ZC5nZXRwd25hbShzeXMuYXJndlsxXSkucHdfZGlyKQpkaXJlY3RvcnkgPSBob21lIC8gJy5sb2NhbC9saWJleGVjJwpleHBlY3RlZCA9IHsKICAgICduYXRpdmUtcHJvLWNvbW1hbmQnOiAnMzlhYTQ0NzhjMDMzMmUyY2I2YTdjZDlhYmZiNTgzNGQ0YTNhOTUzNjVkNDFlNDBhNzQ5NDY0Nzg0NWVlOGQ1OScsCiAgICAnbmF0aXZlLXByby1kZXNrdG9wJzogJzAyMTMzYWI0M2IxY2VjYmVhNmY2YTRhYjU5ZGYzMWE2YTczYjQzMDc1MGI4NDRjOTU1ZDU2YjZhYzViNTQ4YzgnLAogICAgJ2Nob25rc3RlcC1uYXRpdmUtcHJvLXNlc3Npb24nOiAnMWQyMjJmYWQyYTg5MWY4MzI5MmQ0NjdhMzNjZmNhNDI5MTRiYjFhNDZkMTcxNWUwYzYxZWE2ZTI0NWYxZDRmOCcsCn0KZm9yIG5hbWUsIGRpZ2VzdCBpbiBleHBlY3RlZC5pdGVtcygpOgogICAgcGF0aCA9IGRpcmVjdG9yeSAvIG5hbWUKICAgIGlmIG5vdCBwYXRoLmlzX2ZpbGUoKSBvciBwYXRoLmlzX3N5bWxpbmsoKToKICAgICAgICBjb250aW51ZQogICAgaW5mbyA9IHBhdGguc3RhdCgpCiAgICBpZiBpbmZvLnN0X3VpZCAhPSBwd2QuZ2V0cHduYW0oc3lzLmFyZ3ZbMV0pLnB3X3VpZDoKICAgICAgICBjb250aW51ZQogICAgb3JpZ2luYWwgPSBwYXRoLnJlYWRfYnl0ZXMoKQogICAgaWYgaGFzaGxpYi5zaGEyNTYob3JpZ2luYWwpLmhleGRpZ2VzdCgpICE9IGRpZ2VzdDoKICAgICAgICBwcmludChmJ0tlZXBpbmcgY3VzdG9tIHNlc3Npb24ge3BhdGh9JykKICAgICAgICBjb250aW51ZQogICAgdGV4dCA9IG9yaWdpbmFsLmRlY29kZSgpCiAgICBpZiBuYW1lID09ICduYXRpdmUtcHJvLWRlc2t0b3AnOgogICAgICAgIGFuY2hvciA9ICdjYXNlICIkKHVuYW1lIC1yKSIgaW5cbicKICAgICAgICBhc3NlcnQgdGV4dC5jb3VudChhbmNob3IpID09IDEKICAgICAgICB0ZXh0ID0gdGV4dC5yZXBsYWNlKGFuY2hvciwgJycnaWYgL29wdC9tZXNhLW0zL25hdGl2ZS1wcm8vbGliZXhlYy9tZXNhLW0zLXByby1jaGVjayAmJgogICBbWyAtZiAiJEhPTUUvLmNvbmZpZy9jaG9ua3N0ZXAvbmF0aXZlLXByby1lbmFibGVkIiBdXTsgdGhlbgogZXhlYyB1d3NtIHN0YXJ0IC1nIC0xIC1lIC1EIGNob25rc3RlcCAtTiBjaG9ua3N0ZXAtbmF0aXZlLXBybyAtLSAiJEhPTUUvLmxvY2FsL2xpYmV4ZWMvY2hvbmtzdGVwLW5hdGl2ZS1wcm8tc2Vzc2lvbiIgLS1kaXNwbGF5PWRjcCAiJEAiCmZpCicnJyArIGFuY2hvcikKICAgIGVsaWYgbmFtZSA9PSAnbmF0aXZlLXByby1jb21tYW5kJzoKICAgICAgICBhbmNob3IgPSAnZXhlYyAiJEAiJwogICAgICAgIGFzc2VydCB0ZXh0LmNvdW50KGFuY2hvcikgPT0gMQogICAgICAgIHRleHQgPSB0ZXh0LnJlcGxhY2UoYW5jaG9yLCAnLiAvb3B0L21lc2EtbTMvbmF0aXZlLXByby9saWJleGVjL21lc2EtbTMtcHJvLXNlc3Npb24tZW52XG5cbicgKyBhbmNob3IpCiAgICBlbHNlOgogICAgICAgIGFuY2hvciA9ICdpZGVudGl0eT0kKC9vcHQvbWVzYS1tMy9saWJleGVjL21lc2EtbTMtYWJpLWNoZWNrJwogICAgICAgIGFzc2VydCB0ZXh0LmNvdW50KGFuY2hvcikgPT0gMQogICAgICAgIHRleHQgPSB0ZXh0LnJlcGxhY2UoYW5jaG9yLCAnJydpZiAvb3B0L21lc2EtbTMvbmF0aXZlLXByby9saWJleGVjL21lc2EtbTMtcHJvLWNoZWNrOyB0aGVuCiBLPS9vcHQvbWVzYS1tMy9wcm8tdnVsa2FuCmZpCicnJyArIGFuY2hvcikKICAgICAgICB0ZXh0ID0gdGV4dC5yZXBsYWNlKCdbICIkSyIgPSAiJFYiIF0gfHwgSUNEPSIkSy9wcml2YXRlLWljZC5qc29uIicsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAnWyAiJEsiID0gIiRWIiBdIHx8IFsgIiRLIiA9IC9vcHQvbWVzYS1tMy9wcm8tdnVsa2FuIF0gfHwgSUNEPSIkSy9wcml2YXRlLWljZC5qc29uIicpCiAgICAgICAgYW5jaG9yID0gJ2V4ZWMgL2hvbWUvY2hyaXNrL3NyYy9jaG9ua3N0ZXAvc2NyaXB0cy93YXlsYW5kLXNlc3Npb24uc2gnCiAgICAgICAgYXNzZXJ0IHRleHQuY291bnQoYW5jaG9yKSA9PSAxCiAgICAgICAgdGV4dCA9IHRleHQucmVwbGFjZShhbmNob3IsICcuIC9vcHQvbWVzYS1tMy9uYXRpdmUtcHJvL2xpYmV4ZWMvbWVzYS1tMy1wcm8tc2Vzc2lvbi1lbnZcblxuJyArIGFuY2hvcikKICAgIGJhY2t1cCA9IHBhdGgud2l0aF9uYW1lKHBhdGgubmFtZSArICcuYXVyb3JhLScgKyBkaWdlc3RbOjEyXSArICcuc2F2ZWQnKQogICAgaWYgbm90IGJhY2t1cC5leGlzdHMoKToKICAgICAgICBiYWNrdXAud3JpdGVfYnl0ZXMob3JpZ2luYWwpCiAgICAgICAgb3MuY2hvd24oYmFja3VwLCBpbmZvLnN0X3VpZCwgaW5mby5zdF9naWQpCiAgICAgICAgb3MuY2htb2QoYmFja3VwLCBzdGF0LlNfSU1PREUoaW5mby5zdF9tb2RlKSkKICAgIGVsc2U6CiAgICAgICAgYXNzZXJ0IGJhY2t1cC5yZWFkX2J5dGVzKCkgPT0gb3JpZ2luYWwKICAgIGZkLCB0ZW1wb3JhcnkgPSB0ZW1wZmlsZS5ta3N0ZW1wKHByZWZpeD1uYW1lICsgJy4nLCBkaXI9ZGlyZWN0b3J5KQogICAgdHJ5OgogICAgICAgIHdpdGggb3MuZmRvcGVuKGZkLCAndycpIGFzIG91dHB1dDoKICAgICAgICAgICAgb3V0cHV0LndyaXRlKHRleHQpCiAgICAgICAgICAgIG91dHB1dC5mbHVzaCgpCiAgICAgICAgICAgIG9zLmZzeW5jKG91dHB1dC5maWxlbm8oKSkKICAgICAgICBvcy5jaG93bih0ZW1wb3JhcnksIGluZm8uc3RfdWlkLCBpbmZvLnN0X2dpZCkKICAgICAgICBvcy5jaG1vZCh0ZW1wb3JhcnksIHN0YXQuU19JTU9ERShpbmZvLnN0X21vZGUpKQogICAgICAgIG9zLnJlcGxhY2UodGVtcG9yYXJ5LCBwYXRoKQogICAgZmluYWxseToKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyh0ZW1wb3JhcnkpOgogICAgICAgICAgICBvcy51bmxpbmsodGVtcG9yYXJ5KQogICAgcHJpbnQoZidVcGRhdGVkIG1hbmFnZWQgc2Vzc2lvbiB7cGF0aH07IHByZXZpb3VzIGZpbGUgaXMge2JhY2t1cH0nKQo="
 M3_PRO_PERF_SELECTED=0
 
 M3_PRO_PERF_PRE_NATIVE=none M3_PRO_PERF_PRE_VULKAN=none
@@ -4917,7 +4917,7 @@ m3_report_boot_dt() {
     echo "boot.bin: not found or not readable"
     return 0
   fi
-  while read -r off; do
+  while IFS=: read -r off _; do
     # A device tree's header: the magic, its total size, ..., and version 17 at byte 20.
     size=$(od -An -tu4 --endian=big -j "$((off + 4))" -N4 "$bin" 2>/dev/null | tr -d ' ')
     ver=$(od -An -tu4 --endian=big -j "$((off + 20))" -N4 "$bin" 2>/dev/null | tr -d ' ')
@@ -4934,9 +4934,7 @@ m3_report_boot_dt() {
       match+="dtb $n (sha256 $sha) is ${dtbs:-none of the device trees of the installed kernels}"$'\n'
     fi
     n=$((n + 1))
-  # Only the offsets: grep -o also prints the matched bytes, which are not
-  # valid UTF-8, and bash 5.2's read returns nothing for them in a UTF-8 locale.
-  done < <(LC_ALL=C grep -obUaP '\xd0\x0d\xfe\xed' "$bin" 2>/dev/null | cut -d: -f1)
+  done < <(LC_ALL=C grep -obUaP '\xd0\x0d\xfe\xed' "$bin" 2>/dev/null)
   echo "device trees in boot.bin: $n"
   if [[ -n $match ]]; then printf '%s' "$match"; else echo "no device tree in boot.bin names this board (${board:-?})"; fi
 }
@@ -6448,7 +6446,7 @@ fingerprint.
    naming the newer one. To check without installing:
 
      curl -fsSL https://api.github.com/repos/omacom/linux-aurora/releases/latest \
-       | grep -m1 '"tag_name"'
+       | grep -m1 '"tag_name"' 
 
    Always fetch the script from the "latest" URL rather than a tag you were
    handed, so you get the current one automatically:
@@ -8512,9 +8510,9 @@ NEO_GPU_COMMITTED=0
 NEO_GPU_CONFIG=/etc/mesa-neo
 NEO_MESA_PREFIX=/opt/mesa-neo
 NEO_GPU_PROFILE=j700-g17p-hal200
-NEO_MESA_PACKAGE=""
-NEO_M1N1_PACKAGE=""
-NEO_M1N1_BIN_SHA=""
+NEO_MESA_PACKAGE="mesa-neo-26.1.4.neo.20261009-9-aarch64.pkg.tar.zst e5535b914f7bba8c01449f1b405e85f5106a0df69efc400d0732d8ab787440a0"
+NEO_M1N1_PACKAGE="m1n1-neo-1.6.1.aurora16.neo.20261009-10-aarch64.pkg.tar.zst 9bcab9e9a3570d3ca8c17cf32ca23d53b0a771c26dca4d24658f206837f8bfd9"
+NEO_M1N1_BIN_SHA="1c61eea4da8bd4bd2e18de534d661ccc569e1b8e92b19d4af867d5b281516491"
 
 neo_gpu_plan() {
   if is_neo && [[ -f $STATE/neo-gpu && -e $NEO_GPU_CONFIG/gpu-experiment ]] &&
