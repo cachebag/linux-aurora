@@ -263,6 +263,17 @@ static inline bool dcp_bl_complete(struct dcp_backlight_state *state,
 	return true;
 }
 
+/*
+ * The actual level to report: with @strict (a panel whose loader level Linux
+ * never learns), none until a present carried one.
+ */
+static inline int dcp_bl_reported_actual(const struct dcp_backlight_state *state, bool strict)
+{
+	if (strict && !state->level_known)
+		return -ENODATA;
+	return state->actual;
+}
+
 /* Three deferred retries per user request; a permanent rejection stays dirty. */
 static inline unsigned int dcp_bl_retry_delay(const struct dcp_backlight_state *state)
 {

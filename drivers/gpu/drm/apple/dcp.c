@@ -3288,6 +3288,8 @@ static int dcp_platform_suspend(struct device *dev)
 	 */
 	dcp_disable_typec_work(dcp, false);
 	cancel_delayed_work_sync(&dcp->swap_watchdog_wq);
+	/* No brightness-only present may run between here and resume. */
+	iomfb_v14_7_backlight_suspend(dcp);
 
 	if (dcp->avep)
 		av_service_disconnect(dcp);
@@ -3328,6 +3330,7 @@ static int dcp_platform_resume(struct device *dev)
 
 	if (dcp->avep)
 		av_service_connect(dcp);
+	iomfb_v14_7_backlight_resume(dcp);
 
 	return 0;
 }
